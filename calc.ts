@@ -1,16 +1,16 @@
 function calc(input: string): string{
-    let data: string[] = input.replaceAll('(', " ").replaceAll(')', " ").split(" ");
-    let stack: number[] = [];
+    const data: string[] = input.replaceAll('(', " ").replaceAll(')', " ").split(" ");
+    const stack: number[] = [];
     for (let i = data.length - 1; i >= 0; i--) {
-        let element = data[i];
+        const element = data[i];
         if (element == " " || element == '') {
             continue;
         }
         if (!isNaN(Number(element))) {
             stack.push(Number(element));
         } else {
-            let firstNum = stack.pop();
-            let secNum = stack.pop();
+            const firstNum = stack.pop();
+            const secNum = stack.pop();
 
             if (firstNum === undefined || secNum === undefined) {
                 return("Недостаточно операндов для операции");

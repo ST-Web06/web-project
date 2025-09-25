@@ -81,7 +81,7 @@ function addSlide(presentation: Presentation): Presentation{
         background: { type: 'color', color: '#FFFFFF' },
         elements: []
     };
-    let newSlidesCollection = [...presentation.slidesCollection, newSlide];
+    const newSlidesCollection = [...presentation.slidesCollection, newSlide];
     
     return {   
         title: presentation.title,
@@ -170,7 +170,7 @@ function addTextElement(slide: Slide, x: number, y: number): Slide {
         fontFamily: "Arial",
         color: '#000000'
     };
-    
+
     const newElements = [...slide.elements, newTextElement];
 
     return {
@@ -178,6 +178,21 @@ function addTextElement(slide: Slide, x: number, y: number): Slide {
         elements: newElements
     };
 }
+
+function addTextElementToSlide(presentation: Presentation, x: number, y: number): Presentation{
+    const activeSlide = presentation.slidesCollection.find(
+        slide => slide.id === presentation.activeSlide);
+    if (!activeSlide){
+        return presentation
+    };
+    const newSlide = addTextElement(activeSlide, x, y);
+    const newSlidesCollection = presentation.slidesCollection.map(slide => slide.id === presentation.activeSlide ? newSlide : slide) 
+    return {
+        ...presentation,
+        slidesCollection: newSlidesCollection
+    }
+}
+ 
 
 function addImageElement(slide: Slide, image: string, x: number, y: number, width: number, height: number): Slide {
     const existingElementIds = slide.elements.map(element => element.id);
@@ -203,6 +218,20 @@ function addImageElement(slide: Slide, image: string, x: number, y: number, widt
     };
 }
 
+function addImageElementToSlide(presentation: Presentation, image: string, x: number, y: number, width: number, height: number): Presentation{
+    const activeSlide = presentation.slidesCollection.find(
+        slide => slide.id === presentation.activeSlide);
+    if (!activeSlide){
+        return presentation
+    };
+    const newSlide = addImageElement(activeSlide, image, x, y, width, height);
+    const newSlidesCollection = presentation.slidesCollection.map(slide => slide.id === presentation.activeSlide ? newSlide : slide) 
+    return {
+        ...presentation,
+        slidesCollection: newSlidesCollection
+    }
+}
+
 function changeText(element: TextElement, newText: string): TextElement {
     return {
         ...element,
@@ -210,8 +239,8 @@ function changeText(element: TextElement, newText: string): TextElement {
     };
 }
 
-function deleteElements(slide: Slide, elementIds: string[]): Slide {
-    const newElements = slide.elements.filter(element => !elementIds.includes(element.id));
+function deleteSlideElements(slide: Slide, selection: Selection): Slide {
+    const newElements = slide.elements.filter(element => !selection.selectedElementIds.includes(element.id));
     
     return {
         ...slide,
@@ -219,7 +248,15 @@ function deleteElements(slide: Slide, elementIds: string[]): Slide {
     };
 }
 
-function deleteSelectedElements(slide: Slide, selection: Selection): Slide {
-    return deleteElements(slide, selection.selectedElementIds);
+function deleteSelectedElements(presentation: Presentation, selection: Selection): Presentation {
+     const activeSlide = presentation.slidesCollection.find(
+        slide => slide.id === presentation.activeSlide);
+    if (!activeSlide){
+        return presentation
+    const newSlide = deleteSlideElements(activeSlide, selection);
+    const newSlidesCollection = presentation.slidesCollection.map(slide => slide.id === presentation.activeSlide ? newSlide : slide);
+    return {
+        ...presentation,
+        slidesCollection: newSlidesCollection
+    };   
 }
-
