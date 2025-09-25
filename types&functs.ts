@@ -253,6 +253,7 @@ function deleteSelectedElements(presentation: Presentation, selection: Selection
         slide => slide.id === presentation.activeSlide);
     if (!activeSlide){
         return presentation
+    }
     const newSlide = deleteSlideElements(activeSlide, selection);
     const newSlidesCollection = presentation.slidesCollection.map(slide => slide.id === presentation.activeSlide ? newSlide : slide);
     return {
